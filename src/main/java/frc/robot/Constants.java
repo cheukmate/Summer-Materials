@@ -44,5 +44,6 @@ public class Constants {
         // controller ports
     public static final int DRIVERPORT = 0;
     public static final int OPERATORPORT= 1;
+    public static final double MAX_SPEED = 0;
 
 }
