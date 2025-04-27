@@ -83,10 +83,10 @@ public class RobotContainer {
    // 1 is tank, 2 is swerve.
     m_drive.setDefaultCommand(new InstantCommand(()-> m_drive.driveCommand(-m_driverController.getLeftY(), -m_operatorController.getRightX()))); // Tank chassis for the sake of example
     //m_swerve.setDefaultCommand(driveFieldOrientedAnglularVelocity); for if you want to use swerve
-  
+    
   }
 
   public Command getAutonomousCommand() {
-    return m_swerve.getAutonomousCommand("New Path"); //whatever path you create, make sure to redeploy with the new name and every time you change it.
+    return m_swerve.getAutonomousCommand("Score Autonomous"); //whatever path you create, make sure to redeploy with the new name and every time you change it.
   }
 }

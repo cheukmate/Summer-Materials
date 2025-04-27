@@ -71,6 +71,11 @@ public class Intake extends SubsystemBase {
       pivotMotor.setControl(request);
   }
 
+  public void intakeyTake(double speed){
+    intakeWheels1.set(speed);
+
+  }
+
 
 
   @Override

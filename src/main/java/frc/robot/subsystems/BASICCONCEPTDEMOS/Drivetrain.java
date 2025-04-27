@@ -33,6 +33,7 @@ public class Drivetrain extends SubsystemBase {
   // These are private so they cannot be accessed by any other subsystems, static so they can be called throughout the subsystem, and final so they cannot be changed.
   // Assign them their IDs (set in the orange place) so that they can function. Motor type depends on what kind of motor you're using. Ask mechanical.
 
+  // i think technically you're supposed to initialize your sparkmaxes in the constructors but I don't want to. DO AS I SAY, NOT AS I DO... 😭
   private static final SparkMax leftLeader = new SparkMax(Constants.leftLeader, MotorType.kBrushed);
   private static final SparkMax leftFollower = new SparkMax(Constants.leftFollower, MotorType.kBrushed);
   private static final SparkMax rightLeader = new SparkMax(Constants.rightLeader, MotorType.kBrushed);
