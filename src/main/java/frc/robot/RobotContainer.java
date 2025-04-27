@@ -6,7 +6,7 @@ package frc.robot;
 
 import java.io.File;
 
-import org.ejml.data.ElementLocation;
+
 
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,6 +20,7 @@ import frc.robot.subsystems.BASICCONCEPTDEMOS.LEDs;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.BASICCONCEPTDEMOS.Shooter;
 import frc.robot.subsystems.BASICCONCEPTDEMOS.tShirtCannon;
+import swervelib.SwerveInputStream;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Elevator;
 
@@ -44,12 +45,53 @@ public class RobotContainer {
       new CommandXboxController(Constants.OPERATORPORT);
 
     //configure bindings
+
+    SwerveInputStream driveAngularVelocity = SwerveInputStream.of(m_swerve.getSwerveDrive(),
+                                                                () -> m_driverController.getLeftY() * -1,
+                                                                () -> m_driverController.getLeftX() * -1)
+                                                            .withControllerRotationAxis(m_driverController::getRightX)
+                                                            .deadband(Constants.DEADBAND)
+                                                            .scaleTranslation(0.8)
+                                                            .allianceRelativeControl(true);
+
+  /**
+   * Clone's the angular velocity input stream and converts it to a fieldRelative input stream.
+   */
+  SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().withControllerHeadingAxis(m_driverController::getRightX,
+                                                                                             m_driverController::getRightY)
+                                                           .headingWhile(true);
+
+  /**
+   * Clone's the angular velocity input stream and converts it to a robotRelative input stream.
+   */
+  SwerveInputStream driveRobotOriented = driveAngularVelocity.copy().robotRelative(true)
+                                                             .allianceRelativeControl(false);
+
+  SwerveInputStream driveAngularVelocityKeyboard = SwerveInputStream.of(m_swerve.getSwerveDrive(),
+                                                                        () -> -m_driverController.getLeftY(),
+                                                                        () -> -m_driverController.getLeftX())
+                                                                    .withControllerRotationAxis(() -> driverXbox.getRawAxis(
+                                                                        2))
+                                                                    .deadband(Constants.DEADBAND)
+                                                                    .scaleTranslation(0.8)
+                                                                    .allianceRelativeControl(true);
   public RobotContainer() {
+  
     configureBindings();
+
+
   }
 
   private void configureBindings() {
-    
+    Command driveFieldOrientedDirectAngle      = m_swerve.driveFieldOriented(driveDirectAngle);
+    Command driveFieldOrientedAnglularVelocity = m_swerve.driveFieldOriented(driveAngularVelocity);
+    Command driveRobotOrientedAngularVelocity  = m_swerve.driveFieldOriented(driveRobotOriented);
+    Command driveSetpointGen = m_swerve.driveWithSetpointGeneratorFieldRelative(
+        driveDirectAngle);
+    Command driveFieldOrientedDirectAngleKeyboard      = m_swerve.driveFieldOriented(driveDirectAngleKeyboard);
+    Command driveFieldOrientedAnglularVelocityKeyboard = m_swerve.driveFieldOriented(driveAngularVelocityKeyboard);
+    Command driveSetpointGenKeyboard = m_swerve.driveWithSetpointGeneratorFieldRelative(
+        driveDirectAngleKeyboard);
    // set your default command for driving
     m_drive.setDefaultCommand(new InstantCommand(()-> m_drive.driveCommand(-m_driverController.getLeftY(), -m_operatorController.getRightX())));
     
