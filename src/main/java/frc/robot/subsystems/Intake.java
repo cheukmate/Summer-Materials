@@ -33,7 +33,7 @@ public class Intake extends SubsystemBase {
 
   public Intake() {
     // init configs
-    pivotMotor.getConfigurator().apply(config);
+    config = new TalonFXConfiguration();
     pivotMotor.setNeutralMode(NeutralModeValue.Brake);
     
     // music is fun
@@ -58,9 +58,9 @@ public class Intake extends SubsystemBase {
     .smartCurrentLimit(30)
     .idleMode(IdleMode.kBrake);
     
-    SPARKconfig
-    .apply(globalConfig)
-    .follow(intakeWheels1);
+   SPARKconfig
+   .follow(15)
+   .apply(globalConfig);
     
     intakeWheels1.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     intakeWheels2.configure(SPARKconfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

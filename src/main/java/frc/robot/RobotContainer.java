@@ -6,15 +6,17 @@ package frc.robot;
 
 import java.io.File;
 
-
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.IntakePivotCommand;
+
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.BASICCONCEPTDEMOS.Drivetrain;
 import frc.robot.subsystems.Intake;
@@ -37,7 +39,7 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter();
   private final tShirtCannon m_cannon = new tShirtCannon();
   private final LEDs m_leds = new LEDs();
-  private final IntakePivotCommand intakePivotCommand = new IntakePivotCommand(m_intake);
+  
     private final SwerveSubsystem m_swerve  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                             "neo"));
 
@@ -66,7 +68,10 @@ public class RobotContainer {
 
  
   public RobotContainer() {
-  
+
+    NamedCommands.registerCommand("Score", Commands.runOnce(()-> {System.out.println("I scored!");}));
+    var autoChooser = AutoBuilder.buildAutoChooser("Score Autonomous");
+    SmartDashboard.putData("Autonomous Command", autoChooser);
     configureBindings();
 
 
@@ -81,7 +86,7 @@ public class RobotContainer {
     
    // set your default command for driving
    // 1 is tank, 2 is swerve.
-    m_drive.setDefaultCommand(new InstantCommand(()-> m_drive.driveCommand(-m_driverController.getLeftY(), -m_operatorController.getRightX()))); // Tank chassis for the sake of example
+    m_drive.setDefaultCommand(new InstantCommand(()-> m_drive.driveCommand(-m_driverController.getLeftY(), -m_operatorController.getRightX()), m_drive)); // Tank chassis for the sake of example
     //m_swerve.setDefaultCommand(driveFieldOrientedAnglularVelocity); for if you want to use swerve
     
   }

@@ -26,10 +26,10 @@ public class Shooter extends SubsystemBase {
   TalonFX flywheel = new TalonFX(Constants.flywheel);
   private TalonFXConfiguration config;
   public Shooter() {
+    config = new TalonFXConfiguration();
 
-  flywheel.getConfigurator().apply(config);
 
-  config = new TalonFXConfiguration();
+ 
 
   flywheel.setNeutralMode(NeutralModeValue.Brake);
   config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
