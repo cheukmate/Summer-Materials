@@ -12,7 +12,9 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.IntakePivotCommand;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.BASICCONCEPTDEMOS.Drivetrain;
 import frc.robot.subsystems.Intake;
@@ -20,8 +22,8 @@ import frc.robot.subsystems.BASICCONCEPTDEMOS.LEDs;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.BASICCONCEPTDEMOS.Shooter;
 import frc.robot.subsystems.BASICCONCEPTDEMOS.tShirtCannon;
+import frc.robot.subsystems.YAGSL.SwerveSubsystem;
 import swervelib.SwerveInputStream;
-import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Elevator;
 
 public class RobotContainer {
@@ -35,6 +37,7 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter();
   private final tShirtCannon m_cannon = new tShirtCannon();
   private final LEDs m_leds = new LEDs();
+  private final IntakePivotCommand intakePivotCommand = new IntakePivotCommand(m_intake);
     private final SwerveSubsystem m_swerve  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                             "neo"));
 
@@ -46,11 +49,11 @@ public class RobotContainer {
 
     //configure bindings
 
-    SwerveInputStream driveAngularVelocity = SwerveInputStream.of(m_swerve.getSwerveDrive(),
+  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(m_swerve.getSwerveDrive(),
                                                                 () -> m_driverController.getLeftY() * -1,
                                                                 () -> m_driverController.getLeftX() * -1)
                                                             .withControllerRotationAxis(m_driverController::getRightX)
-                                                            .deadband(Constants.DEADBAND)
+                                                          
                                                             .scaleTranslation(0.8)
                                                             .allianceRelativeControl(true);
 
@@ -61,20 +64,7 @@ public class RobotContainer {
                                                                                              m_driverController::getRightY)
                                                            .headingWhile(true);
 
-  /**
-   * Clone's the angular velocity input stream and converts it to a robotRelative input stream.
-   */
-  SwerveInputStream driveRobotOriented = driveAngularVelocity.copy().robotRelative(true)
-                                                             .allianceRelativeControl(false);
-
-  SwerveInputStream driveAngularVelocityKeyboard = SwerveInputStream.of(m_swerve.getSwerveDrive(),
-                                                                        () -> -m_driverController.getLeftY(),
-                                                                        () -> -m_driverController.getLeftX())
-                                                                    .withControllerRotationAxis(() -> driverXbox.getRawAxis(
-                                                                        2))
-                                                                    .deadband(Constants.DEADBAND)
-                                                                    .scaleTranslation(0.8)
-                                                                    .allianceRelativeControl(true);
+ 
   public RobotContainer() {
   
     configureBindings();
@@ -83,22 +73,20 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    //drive commands
     Command driveFieldOrientedDirectAngle      = m_swerve.driveFieldOriented(driveDirectAngle);
     Command driveFieldOrientedAnglularVelocity = m_swerve.driveFieldOriented(driveAngularVelocity);
-    Command driveRobotOrientedAngularVelocity  = m_swerve.driveFieldOriented(driveRobotOriented);
     Command driveSetpointGen = m_swerve.driveWithSetpointGeneratorFieldRelative(
         driveDirectAngle);
-    Command driveFieldOrientedDirectAngleKeyboard      = m_swerve.driveFieldOriented(driveDirectAngleKeyboard);
-    Command driveFieldOrientedAnglularVelocityKeyboard = m_swerve.driveFieldOriented(driveAngularVelocityKeyboard);
-    Command driveSetpointGenKeyboard = m_swerve.driveWithSetpointGeneratorFieldRelative(
-        driveDirectAngleKeyboard);
-   // set your default command for driving
-    m_drive.setDefaultCommand(new InstantCommand(()-> m_drive.driveCommand(-m_driverController.getLeftY(), -m_operatorController.getRightX())));
     
+   // set your default command for driving
+   // 1 is tank, 2 is swerve.
+    m_drive.setDefaultCommand(new InstantCommand(()-> m_drive.driveCommand(-m_driverController.getLeftY(), -m_operatorController.getRightX()))); // Tank chassis for the sake of example
+    //m_swerve.setDefaultCommand(driveFieldOrientedAnglularVelocity); for if you want to use swerve
   
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return m_swerve.getAutonomousCommand("New Path"); //whatever path you create, make sure to redeploy with the new name and every time you change it.
   }
 }
