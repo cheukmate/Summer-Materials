@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.BASICCONCEPTDEMOS.Drivetrain;
 import frc.robot.subsystems.Intake;
@@ -24,6 +24,7 @@ import frc.robot.subsystems.BASICCONCEPTDEMOS.LEDs;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.BASICCONCEPTDEMOS.Shooter;
 import frc.robot.subsystems.BASICCONCEPTDEMOS.tShirtCannon;
+import frc.robot.subsystems.BASICCONCEPTDEMOS.LEDs.AnimationTypes;
 import frc.robot.subsystems.YAGSL.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 import frc.robot.subsystems.Elevator;
@@ -39,6 +40,8 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter();
   private final tShirtCannon m_cannon = new tShirtCannon();
   private final LEDs m_leds = new LEDs();
+
+  private Command ElevatorToSetpoint;
   
     private final SwerveSubsystem m_swerve  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                             "neo"));
@@ -74,6 +77,8 @@ public class RobotContainer {
     SmartDashboard.putData("Autonomous Command", autoChooser);
     configureBindings();
 
+    m_leds.setPattern(AnimationTypes.Rainbow);
+
 
   }
 
@@ -84,8 +89,14 @@ public class RobotContainer {
     Command driveSetpointGen = m_swerve.driveWithSetpointGeneratorFieldRelative(
         driveDirectAngle);
     
+        // ( demonstrate triggers, button binding, default commands )
+  // To bind a command to a button, use a Trigger.
+
+  //trigger thing //something will go here
    // set your default command for driving
    // 1 is tank, 2 is swerve.
+   
+  
     m_drive.setDefaultCommand(new InstantCommand(()-> m_drive.driveCommand(-m_driverController.getLeftY(), -m_operatorController.getRightX()), m_drive)); // Tank chassis for the sake of example
     //m_swerve.setDefaultCommand(driveFieldOrientedAnglularVelocity); for if you want to use swerve
     
