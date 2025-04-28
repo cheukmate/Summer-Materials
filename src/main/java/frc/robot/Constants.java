@@ -44,10 +44,15 @@ public class Constants {
         // pivot motors
     public static final int pivot = 20;
     public static final int wheels = 21;
+
+        // limit switch port
+    public static final int limitSwitchPort = 27;
     
         // controller ports
     public static final int DRIVERPORT = 0;
     public static final int OPERATORPORT= 1;
+        // CANdle port
+    public static final int CANdle = 45;
 
     public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
     public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
@@ -58,5 +63,11 @@ public class Constants {
     public static final double LEFT_Y_DEADBAND = 0.1;
     public static final double RIGHT_X_DEADBAND = 0.1;
     public static final double TURN_CONSTANT    = 6;
+    public static double homeOffset = 0;
+    public static double gearRatio = 0;
+    public static double pulleyCircumference = 0;
 
+    
 }
+
+
